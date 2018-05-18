@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 
 import GoogleMapReact from 'google-map-react';
 import AppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
+import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import FlatButton from 'material-ui/FlatButton';
 
 class MapView extends Component {
   constructor(props) {
@@ -17,16 +18,24 @@ class MapView extends Component {
   render() {
     return (
       <MuiThemeProvider>
-        <AppBar
-            title= { "Group: " + this.groupCode }
-            showMenuIconButton={false}
-        ></AppBar>
+        <div>
+          <AppBar
+              title= { "Group: " + this.state.groupCode }
+              onLeftIconButtonClick = { this.props.onClick.bind() }
+              iconElementLeft = {<IconButton> <NavigationArrowBack /> </IconButton>}
+          ></AppBar>
 
-        <MapContainer/>
+          <div style={{ height: '89vh', width: '100%' }}>
+            <MapContainer/>
+          </div>
+        </div>
       </MuiThemeProvider>
     );
   }
 }
+
+export default MapView;
+
 
 class MapContainer extends Component {
     constructor() {
@@ -73,11 +82,7 @@ class MapContainer extends Component {
         this.setState( {myMarkers : this.state.myMarkers} );
     }
 
-
-
-
     render() {
-
         //Marker Component
         const Marker = ({text}) => {
             return (
@@ -87,34 +92,26 @@ class MapContainer extends Component {
 
         return (
             <div>
-                <center>
-                    <div style={{ height: '100%', width: '100%' }}>
+              <GoogleMapReact
+                  bootstrapURLKeys={{ key: 'AIzaSyChhAXI5l-MsCiGFJDlHCQoJF1C6gEngn4' }}
 
-                        <GoogleMapReact
-                            bootstrapURLKeys={{ key: 'AIzaSyChhAXI5l-MsCiGFJDlHCQoJF1C6gEngn4' }}
-
-                            defaultCenter={this.state.center}
-                            defaultZoom={this.state.zoom}
-                        >
+                  defaultCenter={this.state.center}
+                  defaultZoom={this.state.zoom}
+              >
 
 
-                            {
-                                //Add a list of Markers to Your Map
-                                this.state.myMarkers.map( (each) =>
-                                    <Marker
-                                        lat = {each.lat}
-                                        lng = {each.lng}
-                                        text = {each.name}
-                                    />
-                                )
-                            }
-                        </GoogleMapReact>
-                    </div>
-                </center>
+                  {
+                      //Add a list of Markers to Your Map
+                      this.state.myMarkers.map( (each) =>
+                          <Marker
+                              lat = {each.lat}
+                              lng = {each.lng}
+                              text = {each.name}
+                          />
+                      )
+                  }
+              </GoogleMapReact>
             </div>
-
         );
     }
 }
-
-export default MapView;

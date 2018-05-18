@@ -1,7 +1,10 @@
 import React from 'react';
+
 import AppBar from 'material-ui/AppBar';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import IconButton from 'material-ui/IconButton';
+import Edit from 'material-ui/svg-icons/image/edit';
 import FlatButton from 'material-ui/FlatButton';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import firebase from './firebase.js';
 
@@ -13,7 +16,7 @@ class HomeView extends React.Component {
             name: "Default Name"
         };
 
-        this.changeNameTapped = this.changeNameTapped.bind(this);
+        this.editUsername = this.editUsername.bind(this);
         this.joinButton = this.joinButton.bind(this);
         this.createButton = this.createButton.bind(this);
     }
@@ -26,8 +29,8 @@ class HomeView extends React.Component {
       });
     }
 
-    changeNameTapped(event) {
-        this.setState({name: event.target.value});
+    editUsername() {
+      alert("Edit Username");
     }
 
     joinButton() {
@@ -46,7 +49,8 @@ class HomeView extends React.Component {
               <div>
                 <AppBar
                     title= { "Hello " + this.state.name }
-                    showMenuIconButton={false}
+                    onLeftIconButtonClick = { this.editUsername.bind() }
+                    iconElementLeft = {<IconButton> <Edit /> </IconButton>}
                 ></AppBar>
 
                 <FlatButton label = "Join"

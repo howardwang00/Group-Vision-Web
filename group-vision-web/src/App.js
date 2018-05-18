@@ -21,7 +21,7 @@ class App extends Component {
   }
 
   currentPage() {
-    if(this.state.currentView == 1) {
+    if(this.state.currentView === 1) {
       return (
         <HomeView
           onClick = {() => this.segueToMap()}
@@ -31,6 +31,7 @@ class App extends Component {
       return (
         <MapView
           groupCode = { this.state.groupCode }
+          onClick = {() => this.segueToHome()}
         />
       );
     }
