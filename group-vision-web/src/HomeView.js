@@ -30,7 +30,8 @@ class HomeView extends React.Component {
     }
 
     editUsername() {
-      alert("Edit Username");
+      const username = prompt("New Username: ");
+      this.setState({ name: username });
     }
 
     joinButton() {
