@@ -1,0 +1,19 @@
+
+.buttonDiv {
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.joinButton {
+  background-color: #4682B4 !important;
+  width: 200px !important;
+  height: 75px !important;
+  margin-top: 100px !important;
+}
+
+.createButton {
+  background-color: #4682B4 !important;
+  width: 200px !important;
+  height: 75px !important;
+  margin-top: 75px !important;
+}

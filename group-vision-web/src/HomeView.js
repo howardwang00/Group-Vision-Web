@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './HomeView.css';
+
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import Edit from 'material-ui/svg-icons/image/edit';
@@ -46,23 +48,24 @@ class HomeView extends React.Component {
 
     render() {
         return (
-            <MuiThemeProvider>
-              <div>
-                <AppBar
-                    title= { "Hello " + this.state.name }
-                    onLeftIconButtonClick = { this.editUsername.bind() }
-                    iconElementLeft = {<IconButton> <Edit /> </IconButton>}
-                ></AppBar>
-
-                <FlatButton label = "Join"
-                  onClick={this.joinButton}
-                />
-
-                <FlatButton label = "Create"
-                  onClick={this.joinButton}
-                />
-              </div>
-            </MuiThemeProvider>
+          <MuiThemeProvider>
+            <AppBar
+                title= { "Hello " + this.state.name }
+                onLeftIconButtonClick = { this.editUsername.bind() }
+                iconElementLeft = {<IconButton> <Edit /> </IconButton>}
+            ></AppBar>
+            <div className = "buttonDiv">
+              <FlatButton className = "joinButton"
+                label = "Join"
+                onClick={this.joinButton}
+              />
+              <br />
+              <FlatButton className = "createButton"
+                label = "Create"
+                onClick={this.createButton}
+              />
+            </div>
+          </MuiThemeProvider>
         );
     }
 }
