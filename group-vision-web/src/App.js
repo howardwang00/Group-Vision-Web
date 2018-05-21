@@ -12,6 +12,12 @@ class App extends Component {
     };
   }
 
+  joinGroup = (groupCode) => {
+    this.setState({groupCode: groupCode});
+
+    this.segueToMap();
+  }
+
   segueToMap() {
     this.setState({currentView: 2});
   }
@@ -25,6 +31,7 @@ class App extends Component {
       return (
         <HomeView
           onClick = {() => this.segueToMap()}
+          joinGroup = {this.joinGroup}
         />
       );
     } else {

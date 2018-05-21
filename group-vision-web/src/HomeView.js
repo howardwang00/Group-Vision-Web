@@ -37,12 +37,11 @@ class HomeView extends React.Component {
     }
 
     joinButton() {
-      console.log("Join Clicked");
-      this.props.onClick();
+      const groupCode = prompt("Enter Group Code: ");
+      this.props.joinGroup(groupCode);
     }
 
     createButton() {
-      console.log("Create Clicked");
       this.props.onClick();
     }
 
