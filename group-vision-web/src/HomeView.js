@@ -31,9 +31,9 @@ class HomeView extends React.Component {
       const groupCode = prompt("Enter Group Code: ");
       if(groupCode == null) {
         alert('Invalid Group Code');
-      } else if(groupCode == '') {
+      } else if(groupCode === '') {
         alert('Please Input a Group Code');
-      } else if(groupCode.length != 4) {
+      } else if(groupCode.length !== 4) {
         alert('Invaled Number of Characters');
       } else {
         this.props.joinGroup(groupCode);

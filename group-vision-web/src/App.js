@@ -28,8 +28,6 @@ class App extends Component {
   }
 
   joinGroup = (groupCode) => {
-    var users = {};
-
     const ref = firebase.database().ref("groups").child(groupCode);
 
     return ref.once('value').then((snapshot) => {
