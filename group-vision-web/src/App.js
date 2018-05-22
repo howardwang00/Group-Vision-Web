@@ -9,11 +9,10 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      groupCode: '',
       username: 'Default Name',
       currentView: 1
     };
-
-    const groupCode = '';
   }
 
   componentWillMount() {
@@ -22,17 +21,6 @@ class App extends Component {
       console.log(error.code);
       console.log(error.message);
     });
-
-    /*
-    var users = {};
-
-    const groupRef = firebase.database().ref("groups");
-
-    groupRef.on('value', snapshot => {
-      users = snapshot.val();
-      console.log(users);
-    });
-    */
   }
 
   editUsername = (username) => {
@@ -40,9 +28,20 @@ class App extends Component {
   }
 
   joinGroup = (groupCode) => {
-    this.groupCode = groupCode;
+    var users = {};
 
-    this.segueToMap();
+    const ref = firebase.database().ref("groups").child(groupCode);
+
+    return ref.once('value').then((snapshot) => {
+      if(snapshot.val() != null) {
+        console.log('Snapshot Value: ' + snapshot.val());
+        this.setState({groupCode: groupCode})
+
+        this.segueToMap();
+      } else {
+        alert('Group Does Not Exist');
+      }
+    });
   }
 
   segueToMap() {
@@ -66,7 +65,7 @@ class App extends Component {
     } else {
       return (
         <MapView
-          groupCode = { this.groupCode }
+          groupCode = { this.state.groupCode }
           onClick = {() => this.segueToHome()}
         />
       );
