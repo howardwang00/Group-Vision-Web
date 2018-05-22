@@ -8,8 +8,6 @@ import Edit from 'material-ui/svg-icons/image/edit';
 import FlatButton from 'material-ui/FlatButton';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import firebase from './firebase.js';
-
 class HomeView extends React.Component {
     constructor(props) {
         super(props);
@@ -21,14 +19,6 @@ class HomeView extends React.Component {
         this.editUsername = this.editUsername.bind(this);
         this.joinButton = this.joinButton.bind(this);
         this.createButton = this.createButton.bind(this);
-    }
-
-    componentWillMount() {
-      console.log("Connecting to Firebase");
-      firebase.auth().signInAnonymously().catch(function(error) {
-        console.log(error.code);
-        console.log(error.message);
-      });
     }
 
     editUsername() {
@@ -48,21 +38,23 @@ class HomeView extends React.Component {
     render() {
         return (
           <MuiThemeProvider>
-            <AppBar
-                title= { "Hello " + this.state.name }
-                onLeftIconButtonClick = { this.editUsername.bind() }
-                iconElementLeft = {<IconButton> <Edit /> </IconButton>}
-            ></AppBar>
-            <div className = "buttonDiv">
-              <FlatButton className = "joinButton"
-                label = "Join"
-                onClick={this.joinButton}
-              />
-              <br />
-              <FlatButton className = "createButton"
-                label = "Create"
-                onClick={this.createButton}
-              />
+            <div>
+              <AppBar
+                  title= { "Hello " + this.state.name }
+                  onLeftIconButtonClick = { this.editUsername.bind() }
+                  iconElementLeft = {<IconButton> <Edit /> </IconButton>}
+              ></AppBar>
+              <div className = "buttonDiv">
+                <FlatButton className = "joinButton"
+                  label = "Join"
+                  onClick={this.joinButton}
+                />
+                <br />
+                <FlatButton className = "createButton"
+                  label = "Create"
+                  onClick={this.createButton}
+                />
+              </div>
             </div>
           </MuiThemeProvider>
         );

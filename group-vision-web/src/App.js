@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import MapView from './MapView.js';
 import HomeView from './HomeView.js';
 
+import firebase from './firebase.js';
+
 class App extends Component {
   constructor() {
     super();
@@ -10,6 +12,33 @@ class App extends Component {
       currentView: 1,
       groupCode: 'AAAA'
     };
+  }
+
+  componentWillMount() {
+    console.log("Connecting to Firebase");
+    firebase.auth().signInAnonymously().catch(function(error) {
+      console.log(error.code);
+      console.log(error.message);
+    });
+
+    const users = [];
+
+    const groupRef = firebase.database().ref("groups").child('0UN5');
+
+    groupRef.on('value', snapshot => {
+
+      snapshot.forEach(childSnapshot => {
+        const user = {
+          coordinate: childSnapshot.val().coordinate,
+          timestamp: childSnapshot.val().timestamp,
+          username: childSnapshot.val().username,
+        }
+
+        users.push(user);
+      });
+    });
+
+    console.log(users);
   }
 
   joinGroup = (groupCode) => {
