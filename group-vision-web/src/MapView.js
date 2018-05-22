@@ -7,112 +7,90 @@ import IconButton from 'material-ui/IconButton';
 import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+import firebase from './firebase.js';
+
 class MapView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       groupCode: this.props.groupCode,
+
+      center : {
+          lat: 37.3596049,
+          lng: -122.0665
+      },
+      zoom : 16,
+      groupLocations : null
     }
   }
 
+  componentWillMount() {
+    const ref = firebase.database().ref('groups/' + this.state.groupCode);
+
+    ref.on('value', (snapshot) => {
+      const updatedLocations = [];
+
+      console.log('Updating Markers');
+      console.log(snapshot.val());
+      snapshot.forEach(childSnapshot => {
+        const marker = {
+          username: childSnapshot.val().username,
+          lat: childSnapshot.val().coordinate.latitude,
+          lng: childSnapshot.val().coordinate.longitude,
+        }
+        console.log("Adding marker: " + marker.username + " " + marker.lat + " " + marker.lng);
+        updatedLocations.push(marker);
+      });
+
+      this.setState({groupLocations: updatedLocations});
+    });
+
+  }
+
   render() {
+    //Marker Component
+    const Marker = ({text}) => {
+        return (
+            <div><b>{text}</b></div>
+        );
+    }
+
     return (
-      <MuiThemeProvider>
-        <div>
+      <div>
+        <MuiThemeProvider>
           <AppBar
               title= { "Group: " + this.state.groupCode }
               onLeftIconButtonClick = { this.props.onClick.bind() }
               iconElementLeft = {<IconButton> <NavigationArrowBack /> </IconButton>}
           ></AppBar>
+        </MuiThemeProvider>
 
-          <div style={{ height: '89vh', width: '100%' }}>
-            <MapContainer/>
-          </div>
+        <div style={{ height: '89vh', width: '100%' }}>
+          <GoogleMapReact
+              bootstrapURLKeys={{ key: 'AIzaSyChhAXI5l-MsCiGFJDlHCQoJF1C6gEngn4' }}
+
+              defaultCenter={this.state.center}
+              defaultZoom={this.state.zoom}
+
+          >
+            {
+              this.state.groupLocations ?
+                this.state.groupLocations.map( (each) =>
+                    <Marker
+                        lat = {each.lat}
+                        lng = {each.lng}
+                        text = {each.username}
+                    />
+                )
+                :
+                undefined
+            }
+          </GoogleMapReact>
         </div>
-      </MuiThemeProvider>
+      </div>
     );
   }
 }
 
 export default MapView;
-
-
-class MapContainer extends Component {
-    constructor() {
-        super();
-
-        this.state = {
-
-            //This is where the center of map is going to be
-            center : {
-                lat: 37.3596049,
-                lng: -122.0665
-            },
-
-            //This is how much you want to zoom in
-            zoom : 16,
-
-            //This is the list of markers.
-            myMarkers : []
-        };
-
-
-        //Adding to the list of markers
-        const aMarker = {
-            name : 'Mountain View High School',
-            lat : 37.3605,
-            lng : -122.0675,
-        }
-        this.state.myMarkers.push(aMarker);
-
-        const aMarker2 = {
-            name : 'FreeStyle',
-            lat : 37.3599588,
-            lng : -122.0653,
-        }
-        this.state.myMarkers.push(aMarker2);
-
-        const aMarker3 = {
-            name : 'Alta Vista',
-            lat : 37.360188,
-            lng : -122.064,
-        }
-        this.state.myMarkers.push(aMarker3);
-
-        this.setState( {myMarkers : this.state.myMarkers} );
-    }
-
-    render() {
-        //Marker Component
-        const Marker = ({text}) => {
-            return (
-                <div><b>{text}</b></div>
-            );
-        }
-
-        return (
-            <div>
-              <GoogleMapReact
-                  bootstrapURLKeys={{ key: 'AIzaSyChhAXI5l-MsCiGFJDlHCQoJF1C6gEngn4' }}
-
-                  defaultCenter={this.state.center}
-                  defaultZoom={this.state.zoom}
-              >
-
-
-                  {
-                      //Add a list of Markers to Your Map
-                      this.state.myMarkers.map( (each) =>
-                          <Marker
-                              lat = {each.lat}
-                              lng = {each.lng}
-                              text = {each.name}
-                          />
-                      )
-                  }
-              </GoogleMapReact>
-            </div>
-        );
-    }
-}
