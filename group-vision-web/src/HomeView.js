@@ -13,7 +13,7 @@ class HomeView extends React.Component {
         super(props);
 
         this.state = {
-            name: "Default Name"
+            username: this.props.username
         };
 
         this.editUsername = this.editUsername.bind(this);
@@ -23,7 +23,8 @@ class HomeView extends React.Component {
 
     editUsername() {
       const username = prompt("New Username: ");
-      this.setState({ name: username });
+      this.props.editUsername(username);
+      this.setState({ username: username });
     }
 
     joinButton() {
@@ -40,7 +41,7 @@ class HomeView extends React.Component {
           <MuiThemeProvider>
             <div>
               <AppBar
-                  title= { "Hello " + this.state.name }
+                  title= { "Hello " + this.state.username }
                   onLeftIconButtonClick = { this.editUsername.bind() }
                   iconElementLeft = {<IconButton> <Edit /> </IconButton>}
               ></AppBar>

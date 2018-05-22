@@ -9,9 +9,11 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      currentView: 1,
-      groupCode: 'AAAA'
+      username: 'Default Name',
+      currentView: 1
     };
+
+    const groupCode = '';
   }
 
   componentWillMount() {
@@ -21,28 +23,24 @@ class App extends Component {
       console.log(error.message);
     });
 
-    const users = [];
+    /*
+    var users = {};
 
-    const groupRef = firebase.database().ref("groups").child('0UN5');
+    const groupRef = firebase.database().ref("groups");
 
     groupRef.on('value', snapshot => {
-
-      snapshot.forEach(childSnapshot => {
-        const user = {
-          coordinate: childSnapshot.val().coordinate,
-          timestamp: childSnapshot.val().timestamp,
-          username: childSnapshot.val().username,
-        }
-
-        users.push(user);
-      });
+      users = snapshot.val();
+      console.log(users);
     });
+    */
+  }
 
-    console.log(users);
+  editUsername = (username) => {
+    this.setState({username: username});
   }
 
   joinGroup = (groupCode) => {
-    this.setState({groupCode: groupCode});
+    this.groupCode = groupCode;
 
     this.segueToMap();
   }
@@ -59,14 +57,16 @@ class App extends Component {
     if(this.state.currentView === 1) {
       return (
         <HomeView
+          username = {this.state.username}
           onClick = {() => this.segueToMap()}
+          editUsername = {this.editUsername}
           joinGroup = {this.joinGroup}
         />
       );
     } else {
       return (
         <MapView
-          groupCode = { this.state.groupCode }
+          groupCode = { this.groupCode }
           onClick = {() => this.segueToHome()}
         />
       );
