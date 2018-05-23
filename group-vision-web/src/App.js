@@ -32,13 +32,19 @@ class App extends Component {
 
         return ref.once('value').then((snapshot) => {   //Could have issues with once not working
             if (snapshot.val() != null) {
-                this.setState({groupCode: groupCode})
+                this.setState({groupCode: groupCode});
 
                 this.segueToMap();
             } else {
                 alert('Group Does Not Exist');
             }
         });
+    }
+    
+    createGroup = () => {
+        const groupCode = prompt('Enter Group Code: ');
+        this.setState({groupCode: groupCode});
+        this.segueToMap();
     }
 
     segueToMap() {
@@ -56,6 +62,7 @@ class App extends Component {
                     username={this.state.username}
                     editUsername={this.editUsername}
                     joinGroup={this.joinGroup}
+                    createGroup={this.createGroup}
                 />
             );
         } else {

@@ -41,7 +41,7 @@ class HomeView extends React.Component {
     }
 
     createButton() {
-        this.props.onClick();
+        this.props.createGroup();
     }
 
     render() {
