@@ -23,11 +23,15 @@ class MapView extends Component {
             zoom: 16,
             groupLocations: null
         }
+
+        this.updateLocation = this.updateLocation.bind(this);
     }
 
     componentWillMount() {
-        this.updateLocation();
         this.startRetrievingMemberLocations();
+
+        this.updateLocation();
+
     }
 
     startRetrievingMemberLocations() {
@@ -51,8 +55,8 @@ class MapView extends Component {
     }
 
     updateLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
+        if(navigator.geolocation) {
+            navigator.geolocation.watchPosition((position) => {
                 console.log("Latitutde: " + position.coords.latitude);
                 console.log("Longitutde: " + position.coords.longitude);
 
@@ -70,6 +74,10 @@ class MapView extends Component {
                 ref.update(userData);
             }, (error) => {
                 console.log(error.message);
+            },{
+                timeout: 5000,
+                enableHighAccuracy: true,
+                maximumAge: Infinity,
             });
         } else {
             console.log('navigator.geolocation does not exist');
