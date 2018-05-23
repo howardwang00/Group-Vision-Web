@@ -26,6 +26,11 @@ class MapView extends Component {
   }
 
   componentWillMount() {
+      this.updateLocation();
+      this.startRetrievingMemberLocations();
+  }
+
+  startRetrievingMemberLocations() {
     const ref = firebase.database().ref('groups/' + this.state.groupCode);
 
     ref.on('value', (snapshot) => {
@@ -45,7 +50,32 @@ class MapView extends Component {
 
       this.setState({groupLocations: updatedLocations});
     });
+  }
 
+  updateLocation() {
+      if(navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition( (position) => {
+              console.log("Latitutde: " + position.coords.latitude);
+              console.log("Longitutde: " + position.coords.longitude);
+
+              const userData = {
+                  coordinate: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude,
+                  },
+                  timestamp: 0,
+                  username: this.props.username,
+              }
+              const uid = firebase.auth().currentUser.uid;
+              const ref = firebase.database().ref('groups/' + this.state.groupCode + "/" + uid);
+
+              ref.update(userData);
+          }, (error) => {
+              console.log(error.message);
+          });
+      } else {
+          console.log('navigator.geolocation does not exist');
+      }
   }
 
   render() {

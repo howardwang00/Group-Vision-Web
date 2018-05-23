@@ -30,9 +30,8 @@ class App extends Component {
   joinGroup = (groupCode) => {
     const ref = firebase.database().ref("groups").child(groupCode);
 
-    return ref.once('value').then((snapshot) => {
+    return ref.once('value').then((snapshot) => {   //Could have issues with calling this too many times
       if(snapshot.val() != null) {
-        console.log('Snapshot Value: ' + snapshot.val());
         this.setState({groupCode: groupCode})
 
         this.segueToMap();
@@ -63,6 +62,7 @@ class App extends Component {
     } else {
       return (
         <MapView
+            username = { this.state.username }
           groupCode = { this.state.groupCode }
           onClick = {() => this.segueToHome()}
         />
