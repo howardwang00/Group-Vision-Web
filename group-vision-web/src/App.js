@@ -79,8 +79,12 @@ class App extends Component {
     
     createGroup = () => {
         const groupCode = prompt('Enter Group Code: ');
-        this.setState({groupCode: groupCode});
-        this.segueToMap();
+        if(groupCode.length == 4) {
+            this.setState({groupCode: groupCode});
+            this.segueToMap();
+        } else {
+            alert('Invalid Group Code');
+        }
     }
 
     segueToAdmin = () => {
