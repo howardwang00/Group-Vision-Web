@@ -5,14 +5,23 @@ import HomeView from './HomeView.js';
 
 import firebase from './firebase.js';
 
+import AppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
+import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
 class App extends Component {
     constructor() {
         super();
         this.state = {
             groupCode: '',
             username: 'Default Name',
-            currentView: 1
+            currentView: 1,
+
+            adminData: [],
         };
+
+        this.segueToHome = this.segueToHome.bind(this);
     }
 
     componentWillMount() {
@@ -20,6 +29,33 @@ class App extends Component {
         firebase.auth().signInAnonymously().catch(function (error) {
             console.log(error.code);
             console.log(error.message);
+        });
+
+        const ref = firebase.database().ref('groups/');
+
+        ref.on('value', (snapshot) => {
+            const adminData = [];
+
+            console.log('Getting Group Data');
+            snapshot.forEach(childSnapshot => {
+                const groupData = [];
+                childSnapshot.forEach(childSnapshot => {
+                    const user = {
+                        uid: childSnapshot.key,
+                        username: childSnapshot.val().username,
+                        lat: childSnapshot.val().coordinate.latitude,
+                        lng: childSnapshot.val().coordinate.longitude,
+                    }
+                    groupData.push(user);
+                })
+                const group = {
+                    groupCode: childSnapshot.key,
+                    groupData: groupData,
+                }
+                adminData.push(group);
+            });
+            console.log(adminData);
+            this.setState({adminData: adminData});
         });
     }
 
@@ -47,6 +83,13 @@ class App extends Component {
         this.segueToMap();
     }
 
+    segueToAdmin = () => {
+        const passCode = prompt('Enter Admin Password: ');
+        if(passCode === 'password') {
+            this.setState({currentView: 3});
+        }
+    }
+
     segueToMap() {
         this.setState({currentView: 2});
     }
@@ -63,9 +106,10 @@ class App extends Component {
                     editUsername={this.editUsername}
                     joinGroup={this.joinGroup}
                     createGroup={this.createGroup}
+                    onClick={this.segueToAdmin}
                 />
             );
-        } else {
+        } else if(this.state.currentView === 2) {
             return (
                 <MapView
                     username={this.state.username}
@@ -73,6 +117,43 @@ class App extends Component {
                     onClick={() => this.segueToHome()}
                 />
             );
+        } else {
+            return (
+                <MuiThemeProvider>
+                    <div>
+                        <AppBar
+                            title={"Admin"}
+                            onLeftIconButtonClick={this.segueToHome.bind()}
+                            iconElementLeft={<IconButton> <NavigationArrowBack/> </IconButton>}
+
+                        ></AppBar>
+                        <div>
+                            {
+                                this.state.adminData.map((each) => {
+                                    return(
+                                        <div>
+                                            <p>{each.groupCode}</p>
+                                            <p>{
+                                                each.groupData.map((each) => {
+                                                    return(
+                                                        <ul>
+                                                            <li>{each.uid}</li>
+                                                            <li>{each.username}</li>
+                                                            <li>{each.lat}</li>
+                                                            <li>{each.lng}</li>
+                                                        </ul>
+
+                                                    );
+                                                })
+                                            }</p>
+                                        </div>
+                                    );
+                                })
+                            }
+                        </div>
+                    </div>
+                </MuiThemeProvider>
+            )
         }
     }
 

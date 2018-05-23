@@ -52,6 +52,11 @@ class HomeView extends React.Component {
                         title={"Hello " + this.state.username}
                         onLeftIconButtonClick={this.editUsername.bind()}
                         iconElementLeft={<IconButton> <Edit/> </IconButton>}
+                        iconElementRight={
+                            <FlatButton label = "Admin"
+                                        onClick={this.props.onClick}
+                            />
+                        }
                     ></AppBar>
                     <div className="buttonDiv">
                         <FlatButton className="joinButton"
