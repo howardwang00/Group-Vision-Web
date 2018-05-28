@@ -36,7 +36,6 @@ class App extends Component {
         ref.on('value', (snapshot) => {
             const adminData = [];
 
-            console.log('Getting Group Data');
             snapshot.forEach(childSnapshot => {
                 const groupData = [];
                 childSnapshot.forEach(childSnapshot => {
@@ -54,8 +53,8 @@ class App extends Component {
                 }
                 adminData.push(group);
             });
-            console.log(adminData);
             this.setState({adminData: adminData});
+            ref.off();
         });
     }
 
@@ -79,7 +78,7 @@ class App extends Component {
     
     createGroup = () => {
         const groupCode = prompt('Enter Group Code: ');
-        if(groupCode.length == 4) {
+        if(groupCode && groupCode.length === 4) {
             this.setState({groupCode: groupCode});
             this.segueToMap();
         } else {

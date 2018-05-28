@@ -21,10 +21,13 @@ class MapView extends Component {
                 lng: -122.0665
             },
             zoom: 16,
-            groupLocations: null
+            groupLocations: null,
+            groupObserver: null,
         }
 
         this.updateLocation = this.updateLocation.bind(this);
+
+        const watchID = null;
     }
 
     componentWillMount() {
@@ -37,7 +40,7 @@ class MapView extends Component {
     startRetrievingMemberLocations() {
         const ref = firebase.database().ref('groups/' + this.state.groupCode);
 
-        ref.on('value', (snapshot) => {
+        const observer = ref.on('value', (snapshot) => {
             const updatedLocations = [];
 
             console.log('Updating Markers');
@@ -52,11 +55,13 @@ class MapView extends Component {
 
             this.setState({groupLocations: updatedLocations});
         });
+
+        this.setState({observer: observer});
     }
 
     updateLocation() {
         if(navigator.geolocation) {
-            navigator.geolocation.watchPosition((position) => {
+            this.watchID = navigator.geolocation.watchPosition((position) => {
                 console.log("Latitutde: " + position.coords.latitude);
                 console.log("Longitutde: " + position.coords.longitude);
 
@@ -84,6 +89,17 @@ class MapView extends Component {
         }
     }
 
+    leaveGroup(watchID, groupCode, onClick) {
+        if(watchID) {
+            console.log("Clear Watch");
+            navigator.geolocation.clearWatch(watchID);
+        }
+        const uid = firebase.auth().currentUser.uid;
+        firebase.database().ref('groups/' + groupCode + "/" + uid).remove();
+
+        onClick();
+    }
+
     render() {
         //Marker Component
         const Marker = ({text}) => {
@@ -97,7 +113,7 @@ class MapView extends Component {
                 <MuiThemeProvider>
                     <AppBar
                         title={"Group: " + this.state.groupCode}
-                        onLeftIconButtonClick={this.props.onClick.bind()}
+                        onLeftIconButtonClick={() => this.leaveGroup(this.watchID, this.state.groupCode, this.props.onClick)}
                         iconElementLeft={<IconButton> <NavigationArrowBack/> </IconButton>}
                     ></AppBar>
                 </MuiThemeProvider>
@@ -108,7 +124,6 @@ class MapView extends Component {
 
                         defaultCenter={this.state.center}
                         defaultZoom={this.state.zoom}
-
                     >
                         {
                             this.state.groupLocations ?
